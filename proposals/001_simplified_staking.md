@@ -1,5 +1,19 @@
-1. **Introduction to Mining Variance**
 
+# Saito Implementation Protocol -- 001 Simplified Staking
+
+## Abstract 
+
+The following document describes proposed changes to the current implementation of the staking mechanism with an eye for simplifying payouts, eliminating redundancy data structures and improving speed and security.
+
+| Field   | Value                   |
+| ------- | ----------------------- |
+| Author  | David Lancashire        |
+| Status  | Published               |
+| Type    | Implementation Proposal |
+| Created | May 10, 2022            |
+
+
+## 1. **Introduction to Mining Variance**
 
 The expected time for Bitcoin miners to find a single block is 10 minutes. This is just an average: sometimes the network will find several blocks in quick succession, and sometimes it will take a much longer time before miners stumble onto a single valid block. The algorithm that lets us calculate what percentage of Bitcoin blocks will be found after an arbitrary time_in_minutes is:
 
@@ -11,8 +25,7 @@ The important thing to note here is that the difficulty of hashing in Bitcoin pr
 
 Saito’s golden ticket mechanism has similar properties because it also uses a hashing process. We can set a target difficulty that guarantees an average of N golden tickets per M blocks, but we cannot guarantee that any arbitrary chain of M blocks will contain N golden tickets. It is not a problem for Saito if we produce too many golden tickets for any block as only one may be included in the blockchain. But the natural variance at which golden tickets are produced means that some blocks will always go unsolved. Saito’s staking mechanism is intended to address the problems this creates.
 
-
-2. **Golden Ticket Variance and Staking**
+## 2. **Golden Ticket Variance and Staking**
 
 This variance in golden ticket production means that we cannot guarantee that any set of M blocks contains N golden tickets. The larger M gets and the smaller N / M gets the fewer “unsolved” blocks we will have due to the law of large numbers, but it is statistically inevitable that a chain of M blocks will be produced at some point which does not have enough golden tickets.
 
@@ -24,8 +37,7 @@ This is the purpose of the staking payout. As long as Saito does not have stakin
 
 The staking payout addresses this problem by giving us a secure way to distribute the revenue from uncaptured/unsolved blocks to participants in the network without the risk of the block producer re-capturing them. Because of the way that the lottery is designed, the mechanism imposes significant costs on attackers even if they command a significant chunk of the staking payouts.
 
-
-3. **How does Saito Implement Staking?**
+## 3. **How does Saito Implement Staking?**
 
 The protocol tells us that the fees in blocks which do not payout to miners should be distributed to stakers. It does not tell us exactly what data structures we should use to track who is eligible for payment and how these payments are processed.
 
@@ -77,7 +89,7 @@ But the implementation has many downsides:
 - the mechanism is not elegant
 
 
-4. **Suggested Implementation: ATR Staking**
+## 4. **Suggested Implementation: ATR Staking**
 
 We remove the staking table completely. We remove the additional “transaction types” associated with ATR rebroadcasts.
 
