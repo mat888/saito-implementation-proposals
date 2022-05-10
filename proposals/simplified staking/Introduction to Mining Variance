@@ -1,4 +1,4 @@
-Description:
+# Description:
 
 The expected time for Bitcoin miners to find a single block is 10 minutes. This is just an average: sometimes the network will find several blocks in quick succession, and sometimes it will take a much longer time before miners stumble onto a single valid block. The algorithm that lets us calculate what percentage of Bitcoin blocks will be found after an arbitrary time_in_minutes is:
 
