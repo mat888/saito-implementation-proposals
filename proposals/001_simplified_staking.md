@@ -59,10 +59,9 @@ The code that handles winding and unwinding the blockchain is also more complica
 
 There are some advantages to this approach:
 
-it is similar to how other networks handle staking
-onChainReorganization() can blackbox the staking tables
-
-scaling the approach involves “classic” computer science optimization problems
+- it is similar to how other networks handle staking
+- onChainReorganization() can blackbox the staking tables
+- scaling the approach involves known optimization problems
 
 But the implementation has many downsides:
 
