@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This document describes a special transaction output, *one-time receive output* (OTRO), not locked to any key pair, and its associated transaction type, *exclusive-payment*, which consumes as in input the associated one-time receive output should conditions specified in that one-time receive output be met. The primary condition being that a minimum amount of tokens sent to the address in the OTRO is included as an output to the exclusive-payment which consumes that OTRO.
+This document describes a special transaction output, *one-time receive output* (OTRO), not locked to any key pair, and its associated transaction type, *exclusive-payment*, which consumes as input a one-time receive output it references and outputs a minimum amount of tokens to a specific address. If the OTRO has already been spent, the outputs will be invalid, allowing multiple parties to 'bid' over the right to send Saito to an address with only one party ultimately paying.
 
 This addition allows logic on layer 2 to securely accept layer 1 Saito payments without the possibility for multiple layer 1 transactions being accepted while layer 2 logic can only honor one of them. The design hopes to respect and preserve the benefits Saito holds by keeping transaction validation as simple as possible, especially in the early stages of network development.
 
@@ -16,9 +16,9 @@ This addition allows logic on layer 2 to securely accept layer 1 Saito payments 
 
 ## 1. Layer 2 Contract Systems
 
-Layer 2 contract systems work similarly to layer 1 contract system, like Ethereum, but adopt their transaction ordering, security and infrastructure from a layer 1 blockchain. Moving execution systems like this onto the second layer keeps the base chain insulated from any unforeseen consequences the added economic complexity of tracking and computing arbitrary state might introduce.
+Layer 2 contract systems work similarly to layer 1 contract system, like Ethereum, but adopt their transaction ordering, security and infrastructure from a layer 1 blockchain. Moving execution systems like this onto the second layer keeps the base chain insulated from any unforeseen consequences the added economic complexity of tracking and computing arbitrary state might introduce while allowing the layer 2 to inherit the security properties of the base chain.
 
-There is no theoretical barrier preventing such a layer 2 system from existing in exactly this way atop Saito's chain today, but limitations in Saito's transaction logic do prevent the secure and trustless exchange of native layer 1 Saito tokens for computation on any layer 2. A layer 2, with no changes to Saito Protocol, would instead require a minting and distribution of its own token with dubious valuation, or an external bridging service to wrap and unwrap native Saito tokens which would force reliance on other chains or brokers.
+There is no theoretical barrier preventing such a layer 2 system from existing in exactly this way atop Saito's chain today, but limitations in Saito's transaction logic do prevent the secure and trustless exchange of native layer 1 Saito tokens for computation on any layer 2. A layer 2 with no changes to Saito Protocol would require a minting and distribution of its own token isolated from the Saito token, or an external bridging service to wrap and unwrap native Saito tokens which would force reliance on other chains or brokers.
 
 ## 2. Non-revertible Transactions; Risks in Using Layer 1 Saito on a Layer 2
 
@@ -99,3 +99,19 @@ It is the previous concern which motivates the points made regarding the fundame
 "The basic functionality of a distributed contract system is the ability to determine transaction validity not just based on authorization from a private key, but also the internal state of the system in relation to the transaction."
 
 The author believes that one-time receive outputs are the simplest possible, and sufficiently simple transaction logic so as to not introduce exploits targeting validation node running the logic, which grants Saito the fundamental property required to trustlessly spend the native Saito token on the execution of arbitrary logic with negative externalities isolated to layer 2 systems.
+
+## 6. Alternative Approach Not Requiring a Saito Protocol Change
+
+If it is possible to solve this problem purely in the layer 2 implementation, it is worth understanding what, if any, trade-offs exist. The core issue is any situation where any user may send Saito in exchange for layer 2 logic execution - so it may be solved by limiting layer 2 logic such that only one address at a time is allowed to execute that logic.
+
+In the example of selling an NFT, rather than using the chain to post a public offer which can be acted upon, an informal offer is made public by Alice to sell her NFT for 100 Saito. Bob contacts her privately and informs her he is interested, and so Alice forms a transaction which says in layer 2 logic "When 100 Saito is sent to my address which references this transaction, transfer ownership of this NFT to him."
+
+So long as there are sufficient safety conditions in place on the layer 2, such as "Alice may not overwrite this offer to a different address than Bob's or with a different price until X blocks later," Bob can send the Saito tokens ensured that as long as his transaction is published before Alice's overwrite expiration, that he will certainly execute the logic he intended to.
+
+The upside to this approach is that it is possible today. The two major downsides are the lack of trustlessness and the need to delay new offers on the same contract logic. If Alice could overwrite her offer logic quickly after posting her latest offer, she could trick users into sending her Saito which in fact earns them nothing in return on the layer 2. Combine this with the ability for malicious would-be buyers to express interest only to never follow through, and Alice could end up stuck waiting for offers to single addresses to expire before she could try to make a new one with a buyer of genuine interest. This would also cost Alice transaction fees while costing malicious users posing as buyers nothing material.
+
+This greatly restricts such an alternative approach to parties who have enough trust not to lock each other into proposing offers which are never fulfilled. This approach would not be suitable for public contract markets, but may be acceptable for friends trading NFTs used to peer-2-peer gaming - even still, the urge to expand such communities and trade outside trusted circles will ultimately lead into a territory where public trolling of offers cannot be prevented. 
+
+The approach is still interesting, and may be further ameliorated through trading channels where reputation plays a role; it is often the case in digital markets that deals are made entirely on trust with the party 'going second' having the full ability to scam the other for sometimes tens of thousands of dollars - those deals are made leveraged on reputation. In this alternative approach, the risk of a bad deal is reduced all the way down to time wasted waiting for a contract to expire and the fees spent posting it, therefore requiring far less reputation to initiate successful trades. There is also the added benefit of all users being able to record and archive these trades as they happen on-chain in order to build reputation profiles for themselves and other users.
+
+While compelling, this approach still cannot avoid the trade-offs of low throughput and some required trust between parties. When mulling over the proposed changes in this SIP, it may be useful to compare this best case alternative with what can be opened up if the SIP is accepted: the ability to use native Saito coin for fully trustless, high throughput layer 2 execution.
