@@ -98,4 +98,4 @@ It is the previous concern which motivates the points made regarding the fundame
 
 "The basic functionality of a distributed contract system is the ability to determine transaction validity not just based on authorization from a private key, but also the internal state of the system in relation to the transaction."
 
-The author believes that one-time receive outputs are the simplest possible, and sufficiently simple transaction logic so as to not introduce exploits targeting validation node running the logic, which grants Saito the fundamental property required to natively the Saito token with the execution of arbitrary logic with negative externalities isolated to layer 2 systems and beyond.
+The author believes that one-time receive outputs are the simplest possible, and sufficiently simple transaction logic so as to not introduce exploits targeting validation node running the logic, which grants Saito the fundamental property required to trustlessly spend the native Saito token on the execution of arbitrary logic with negative externalities isolated to layer 2 systems.
