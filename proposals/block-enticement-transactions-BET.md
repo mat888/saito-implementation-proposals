@@ -16,12 +16,12 @@ A *block enticement transaction* (BET) is a special transaction to encourage net
 A BET on a block contains a reference to that block, and functions as follows:
 
 * A BET is only valid at a depth greater than the block it references.
-* The paysplit for a BET inherits the consensus value when the BET is in the block immediately following the block at depth *N* that it references, that is, block *N+1*.
+* The BET fee contributes normally to routing work rewards when the BET is in the block immediately following the block at depth *N* that it references, that is, block *N+1*.
 * If the BET is validly included but does not reference the previous block, the fee payout is halved.
 
-The reason a BET is half-refunded to the sender when the referenced block is not adopted is so that the BET is still costly when unsuccesful, and also so network nodes maximize their reward by adopting the block which maintains the full fee of the BET which pays them the most.
+### Half Refund
 
-### Reasoning for the half-refund
+The reason a BET is half-refunded to the sender when the referenced block is not adopted is so that the BET is still costly when unsuccesful, and also so network nodes maximize their reward by adopting the block which maintains the full fee of the BET which pays them the most.
 
 The reduction in reward to network nodes could be distributed to miners and stakers rather than being refunded at all, but ultimately the block producer could recoup those fees by quickly spending the same inputs into a normal transaction. When the BET's routing reward is reduced by paying shifting reward towards miners and stakers, the publisher of the BET has motivation to overwite it. Routers can be incentivized to take the overwriting transaction for half the fee of this type of failed BET.
 
@@ -46,9 +46,9 @@ Block publishers compete for the implicit reward of their block being accepted w
 
 Block producers punish themselves by sending BETs for their block when they are aware that a block at depth *N* already exists; their BET will remain valid, but can and will likely be included on a fork detached from that tardy producer's block. Network nodes who are sent blocks with weak BETs can easily filter them. Block producers will want to compete to entice the rest of the network to accept their block, but the longer they wait to publish the less of a BET they can justify risking, further solidifying blocks published earlier and encouraging them to work on the next block instead.
 
-As time passes and block producers are less willing to risk their money publishing at depth *N*, single block finality concretizes. Publishers sensing any remote risk of placing a BET on a late block are better off being first in line for the following block - with one exception: a publisher who stands to gain an outsized reward at depth *N* may be able to justify placing a large enough BET to sway the network to revert at that depth, but positive of this is that it *prioritizes* high paying transactions. Just like with normal routing work, BETs used to attack the network or revert consensus will always suffer a security fee via the paysplit which makes sustained malicious activity infinitely expensive.
+As time passes and block producers are less willing to risk their money publishing at depth *N*, single block finality concretizes. Publishers sensing any remote risk of placing a BET on a late block are better off being first in line for the following block - with one exception: a publisher who stands to gain an outsized reward at depth *N* may be able to justify placing a large enough BET to sway the network to revert at that depth, but the positive of this is that it *prioritizes* high paying transactions. Just like with normal routing work, BETs used to attack the network or revert consensus will always suffer a security fee via the paysplit which makes sustained malicious activity infinitely expensive.
 
-Still, there may be concern that the use of BETs could backfire against the goal of reducing the network fork rate if an attacker decides to include a large BET on an already produced block in an attempt to halt or revert consensus. This attack is perfectly possible without the BET implementation - an attacker uses funds spent at depth *N* to create a new block at depth *N* with a high enough fee to encourage other nodes to adopt that fork. Whether this type of network bribe takes place in a plain transaction or a BET, the cost is equivalent.
+Still, there may be concern that the use of BETs could backfire against the goal of reducing the network fork rate if an attacker decides to include a large BET on an already produced block in an attempt to halt or revert consensus. This attack is perfectly possible without the BET implementation - an attacker uses funds spent at depth *N* to create a new block at depth *N* with a high a enough fee total to encourage other nodes to adopt that fork. Whether this type of network bribe takes place in a plain transaction or a BET, the cost is equivalent.
 
 ## Malicious Fracturing
 
