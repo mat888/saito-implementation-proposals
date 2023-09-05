@@ -1,7 +1,7 @@
 # Saito Implementation Protocol -- 00x Merkle Completeness Proofs
 
 ## Abstract
---
+
 Merkle Completeness Proofs are a new method of verification full nodes can offer lite clients which can prove that a set of transactions marked a certain way has been completely provided, or that no such transaction exists in the block at all without introducing significant non-reimbursed overhead. 
 
 ## 1. Merkle Proofs
