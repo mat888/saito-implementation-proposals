@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Merkle Completeness Proofs are a new method of verification full nodes can offer lite clients which can prove that a set of transactions marked a certain way has been completely provided, or that no such transaction exists in the block at all without introducing significant non-reimbursed overhead. 
+Merkle Completeness Proofs are a new method of verification full nodes can offer lite clients which can prove that a set of transactions marked a certain way has been completely provided, or that no such transaction exists in the block at all without introducing significant non-reimbursed overhead. Transactions can opt-in and pay an extra fee for any additional computational complexity imparted on block producers.
 
 ## 1. Merkle Proofs
 
