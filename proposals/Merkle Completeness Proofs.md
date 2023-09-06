@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Merkle Completeness Proofs are a new method of verification full nodes can offer lite clients which can prove that a set of transactions marked a certain way has been completely provided, or that no such transaction exists in the block at all. Transactions can opt-in and pay an extra fee for any additional computational complexity imparted on block producers, which most notably involves sorting each 'type' in any block; the computational overhead to verify the sorting or to provide a proof are trivial; the latter consists only of providing two additional Merkle Branches for any single group.
+Merkle Completeness Proofs (MCPs) are a new method of verification full nodes can offer lite clients which can prove that a set of transactions marked a certain way has been completely provided, or that no such transaction exists in the block at all. Transactions can opt-in and pay an extra fee for any additional computational complexity imparted on block producers, which most notably involves sorting each 'type' in any block; the computational overhead to verify the sorting or to provide a proof are trivial; the latter consists only of providing two additional Merkle Branches for any single group.
 
 ## 1. Merkle Proofs
 
@@ -16,35 +16,35 @@ The computation costs of concatenating preimages rather than summing should be t
 
 ## 3. Transaction Intent
 
-*Intent* is any arbitrary peice of identifying information included in the transaction - the most obvious example would the receiving address, so that recepient can test for censorship of messages to them, but can also be an application ID, layer-2 reference, etc. These mark the transaction and determine how they are ordered within the Merkle Tree, as well as providing users and nodes with an marker for transactions they desire completeness proofs for.
+*Intent* is any arbitrary peice of identifying information included in the transaction which has opted in for MCP - the most obvious example being the receiving address, allowing that recepient to test for censorship of messages to them, but the intent can also be an application ID, layer-2 reference, or any other value. These mark the transaction and determine how they are ordered within the Merkle Tree, as well as providing users and nodes with an marker for transactions which they can use to request completeness proofs on.
 
 ## 4. Intent Ordered Merkle Trees
 
-Merkle Completeness Proofs become possible for transactions which opt into a scheme where all transactions of specific 'intent' are grouped adjecently into an *Intent-Ordered* Merkle Tree - each grouping of intent transactions must also be placed adjacently to other intent groups. All transactions opting in to the scheme must appear contiguously on one side the Merkle Tree, and each group must place all its members in an unbroken sequence until they are exhausted. 
+Merkle Completeness Proofs become possible for transactions which opt into a scheme such that all intent transactions are grouped adjecently into an *Intent-Ordered* Merkle Tree. Every unique intent group must place its associated transactions in an unbroken sequence until they are exhausted - and then again for the next intent group, and so on. All transactions opting in to the scheme must appear contiguously on one side the Merkle Tree, and each group must place all its members in an unbroken sequence until they are exhausted. 
 
-Intent groups themselves must all be ordered by their intent's numeric value such that the value of each intent group strictly increases from left to right. Each intent group must have its elements placed in an unbroken sequence, and each seperate group must appear *sorted* by their intent value in an unbroken sequence. These rules must be enforced via consensus.
+Intent groups themselves must all be ordered by their intent's numeric value such that the value of each intent group strictly increases from left to right. Each intent group must have its elements placed in an unbroken sequence, and each seperate group must appear *sorted* by their intent value in an unbroken sequence. These rules must be enforced via consensus. While the requirement to sort does pose a computational burden on block producers, it is trivial to verify and can be reimbursed via an increased fee rate. This burden increases as new intent groups are added, and negligbly so as an existing intent group grows.
 
 ## 4. Merkle Completeness Proofs
 
-Because transactions of like intent, and intent groups generally, must neighboor each other to satisfy consensus rules, concise proofs about the non-existence of any further elements of an intent group can be provided via the preceding and proceding elements of that group. Since consensus rules dictate that transactions with intent must be placed contiguously, only an invalid block could possibly place a member of an intent group outside the bounds of the first and last transaction in any sequence - therefore, providing the first elements on either side which are outside the group produces a completeness proof.
+Because transactions of like intent, and intent groups generally, must neighboor each other to satisfy consensus rules, concise proofs about the non-existence of any further elements of an intent group can be provided via the preceding and proceding elements of that group. As consensus rules dictate that transactions with intent must be placed contiguously, only an invalid block could possibly place a member of an intent group outside the bounds of the first and last intent transaction in any sequence - therefore, providing the first elements on either side which are outside the group produces a completeness proof.
 
 This technique allows users to verify with consensus level certainty that a provided set of transactions of a certain intent includes all transactions of that intent from that block using standard Merkle Proofs, with the only additional information required being two transactions in the tree which 'sandwich' the intent group of interest. With this proof, users can be as certain as the block is valid that they know of every transaction of a certain 'intent.'
 
-Note the exceptions when the intent group is the first intent group or the final one: respectively, the first intent group requires no leftside boundary to prove its completeness, and the final intent group requires the first transaction without any intent value, or if every transaction has intent, it is simply the final transaction in the block. 
+Note the exceptions when the intent group is the first intent group or the final one: respectively, the first intent group requires no leftside boundary to prove its completeness, and the final intent group requires the first transaction without any intent value, or if every transaction has intent, it is simply the final transaction in the block and requires no additional proof. 
 
 ## 5. Non-existence Proofs
 
 The *Intent-Ordered Merkle Tree* can also provide non-existence proofs when *no* transactions of an intent exist at all in a block. Since intent groups must neighbor each other and are ordered numerically, providing the boundary between two groups (the final element of the leftside group, and the first element of the rightside group) proves that any intent values between those two groups can not exist in the block.
 
-When a user seeks proof that no transactions of a certain intent exist within a block, a full node need only to find the boundary between two intent groups for which the user's intent value would have been required to be place in between. By showing that the intent group in the Ordered Merkle Tree is progressed *past* the intent value in question, that intent can be shown not to exist in the tree with at most only two standard Merkle Proofs.
+When a user seeks proof that no transactions of a certain intent exist within a block, a full node need only to find the boundary between two intent groups for which the user's intent value would have been required to be placed in between. By showing that the intent group in the Ordered Merkle Tree is progressed in a single group *past* the intent value in question, that intent group can be shown not to exist in the block using at most only two additional Merkle Proofs.
 
 ## 6. Use Cases
 
 * Efficient Partial UTXO Set Generation
 
-Consider transaction logic which constrains a UTXO such that any transactions spending it as an input must have an intent value which references that UTXO's hash. This UTXO can then be proven to be unspent by providing a non-existence proof, just two Merkle Leaves, for every following block up to the tip of the chain.
+Consider transaction logic which constrains a UTXO such that any transactions spending it as an input must have an intent value which references that UTXO's hash. This UTXO can then be proven to be unspent by providing a non-existence proof, two Merkle Leaves, for every following block up to the tip of the chain.
 
-This allows lite clients to confirm specific transactions are unspent without processing the entire blockchain.
+This allows lite clients to confirm specific transactions are unspent without processing the entire blockchain. Such subsets of UTXO data may be useful for verification nodes which don't run the whole chain, proving ownership of a non-fungible token, and more generally enchancing possible smart contract logic.
 
 * Censorship Checks
 
