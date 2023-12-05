@@ -52,7 +52,9 @@ Users expecting sensitive messages which full nodes may choose not to reveal to 
 
 * Man-in-the-Middle Detection
 
-Specific use cases may include public rooms designed to bootstrap key exchange. Users offer basic identifying information and use the transaction intent "key_exchange". They are thus protected from a full node copying the bootstrapping transactions of others and covertly withholding it from its lite clients in order to secretly impersonate users. If lite clients are not provided with every transaction marked with the intent "key_exchange" they will be able to assume such ommissions have taken place when they do not receive a completeness proof - they can then seek a new network provider which can produce such proofs.
+Specific use cases may include public rooms designed to bootstrap key exchange. Users offer basic identifying information and use the transaction intent "key_exchange". They are thus protected from a full node copying the bootstrapping transactions of others and covertly withholding it from its lite clients in order to secretly impersonate users.
+
+If lite clients are not provided with every transaction marked with the intent "key_exchange" they will be able to assume such ommissions have taken place when they do not receive a completeness proof - they can then seek a new network provider which can produce such proofs. When a node finally does provide them with complete information, they will have a valid completeness proof. As certain as the block is valid, they will have all "key_exchange" transactions.
 
 While malicious nodes are still free to spoof the identities of other users, they cannot, without detection, prevent the interested party(s) from seeing every claim to a single identity in the key exchange intent domain. Users which are being 'attacked' in such a way can resolve the situation by connecting to each individual claim to an identity via a secure key exchange, and determining the verity of each seperately.
 
