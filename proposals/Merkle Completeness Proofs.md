@@ -50,6 +50,25 @@ This allows lite clients to confirm specific transactions are unspent without pr
 
 Users expecting sensitive messages which full nodes may choose not to reveal to them can ask for succint and consensus-backed proofs of non-existence to quickly rule out data-withholding. Nodes which refuse to offer such a trivial service may be assumed censorious by users sensitive to such situations.
 
+* Man-in-the-Middle Detection
+
+Specific use cases may include public rooms designed to bootstrap key exchange. Users offer basic identifying information and use the transaction intent "key_exchange". They are thus protected from a full node copying the bootstrapping transactions of others and covertly withholding it from its lite clients in order to secretly impersonate users. If lite clients are not provided with every transaction marked with the intent "key_exchange" they will be able to assume such ommissions have taken place when they do not receive a completeness proof - they can then seek a new network provider which can produce such proofs.
+
+While malicious nodes are still free to spoof the identities of other users, they cannot, without detection, prevent the interested party(s) from seeing every claim to a single identity in the key exchange intent domain. Users which are being 'attacked' in such a way can resolve the situation by connecting to each individual claim to an identity via a secure key exchange, and determining the verity of each seperately.
+
+<!--
+** Man-in-the-Middle Detection
+
+A man-in-the-middle (MITM) attack is possible when an intermediating relay is able to intercept key exchange information between two parties, replace that data with their own spoofed data, and prevent each party from seeing the originals, thus convincing them to trust the spoofed messages. Blockchain, in theory, prevents this, because the blockchain itself is robustly censorship resistance.
+
+Lite-clients, however, do not usually have the same guarantees of censorship resistence, since they cannot tell when transactions are withheld from them. If a scalable blockchain is going to exist then users must be able to rely on lite clients, as full nodes may be prohibitively expensive. A MITM attack can occur without detection between two lite clients using the same full node provider, or two which collude. Consider Alice and Bob are using the same compromised network provider to connect to the chain, want to initiate a key exchange, and do not yet know each others' public key.
+
+Alice sends the transaction "Hey, Bob. It's Alice," and Bob sends "Hey, Alice. It's Bob." Both transactions are published on chain and the proof of it is given to each respective sender. But rather than supplying Alice's lite client with Bob's transaction, the full node creates and publishes a spoof transaction which claims to be from Bob and supplies Alice's lite client only with that transaction; then gives Bob similar treatment with a spoofed message supposedly from Alice. Each unknowingly connects to the full node's spoof, who can then relay messages between the two with full ability to read and edit.
+
+It is not the fact that spoofed identities can be levied (this is possible on any open network), but rather that the node can strategically and covertly withhold certain information from the key exchange participants, such that they never have any proof or access to more than a single claim to an identity they are interested in communicating with. It is certainly true that if Alice or Bob were to discover another network provider who was no corrupt, or at least two non-coordinating (but perhaps corrupt) providers, that they key exchange, in the worst case, would fail, rather than becoming compromised.
+
+But considering users will only realistically connect to one full node at a time, and may very well fall into using large, popular providers, it should also be the case that they enjoy the ability to detect a single node performing MITM attacks on lite clients rather than relying on an abstract incentive not to snoop - after all, if nodes have an incentive to share transactions pertaining to users in order to attract their transaction flow, they can attract it all the same by sharing with them spoofed messages and failing to relay the genuine ones.
+-->
 * Complete Virtual Machine State Inputs
 
 Layer-2 machines which accumulate state from Saito transactions may require that a valid input must have an intent matching the ID of the layer-2. This makes it so any node or user wishing to rebuild the full state of the layer-2 virtual machine needs only two additional Merkle Leaves in order to verify they are being fed the complete set of inputs and not building an incorrect state at the whim of what full nodes choose to reveal to them. Again, nodes refusing to provide such succinct proofs may be assumed to be withholding data.
