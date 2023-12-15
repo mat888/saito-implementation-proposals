@@ -25,7 +25,7 @@ This is because the only evidence is:
 1. Spoofed transactions exist
 2. Lite clients claim to be censored
 
-It is thus entirely possible, when this evidence is taken seriously, to smear the reputation of an honest node by concocting spoofed transactions oneself and claiming via social fraud that some multitude of lite clients had those transactions censored. Both points, from any outside perspective, have no objective method for verification. Whether an attacker is actually meddling in key exchanges or just setting up an honest, competing node, to appear as doing such, no outside party can objectively discern.
+It is thus entirely possible, when this evidence is taken seriously, to smear the reputation of an honest node by concocting spoofed transactions oneself and claiming via social fraud that some multitude of lite clients had confirmed transactions censored from their lite clients. Both points, from any outside perspective, have no objective method for verification. Whether an attacker is actually meddling in key exchanges or just setting up an honest, competing node, to appear as doing such, no outside party can objectively discern.
 
 If it were possible to prove as a full node one did not withhold certain transactions from a block, then lite clients could have objective proof that their full node peers are not performing such an attack. If such proof was failed to be provided, lite clients may assume that they are under such an attack. This respective assurance and assumption are sufficient to verifiably identify honest nodes and presume suspicion of any others.
 
