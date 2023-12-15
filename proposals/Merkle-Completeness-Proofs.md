@@ -6,11 +6,24 @@ Merkle Completeness Proofs (MCPs) are a new method of verification full nodes ca
 
 In order for these proofs to work, the sorting of intent groups must be enshrined into consensus such that failure to produce a block which correctly sorts such transactions means that the block is not valid.
 
-## 1. Merkle Proofs
+## 1. Merkle Proofs are Insufficient
 
 A typical Merkle Proof is able to succintly prove that some peice of data in a Merkle Tree certainly is a member of it by providing only its associated Merkle Branch. In UTXO blockchains this allows lite clients to confirm transactions without processing an entire block's worth of data; for scalable chains where users are not expected to run full nodes, further block confirmations provide more and more ensurance to lite clients that the inputs to their UTXO were not double spent *within* the block they recieved it from.
 
 Merkle Completeness Proofs seek to provide the inverse assurance that a Merkle Branch provides. If a user is not provided with certain branches of the Merkle Tree, they can not know for sure what *does not* exist - i.e. they can not know what they are missing without a full block. This has important implications when the blockchain is used for secure messaging and key exchange - notably: a colluding set of full nodes may fail to provide users with key exchange requests from other users, opting  instead to selectively copy and spoof those messages in order to covertly insert themselves into the key exchange.
+
+### How to Attack
+
+This is crucially important for blockchain to function as a PKI. If it is assumed that two parties already know each others' public keys, then the need for a PKI is no longer required; secure key exchange can take place on any network so long as they have the ability to verify signatures. The *Discovery Step* of key exchange, confirming that a public key belongs to someone, over a public network, is where MCPs remove an attack vector; Nodes which include *discovery transactions* in the blocks but do not provide them to lite clients appear perfectly compliant in terms of the Merkle Tree.
+
+The full node then sends to each lite client their version of the *discovery transactions,* which are not burdened by a competition with the authentic message in the view of any lite clients for which the data was withheld. Any lite clients falling prey to this will initiate their key exchanges with the malicious nodes believing it is a genuine peer, and that full node will have a covert middle position in all their encrypted communications.
+
+Saito economics or incentives are not fully sufficient to prevent such an attack, not because the incentives fail - they do indeed give nodes proper economic motivation to share data where others withhold in order to take their market share. The attack persists despite this because it is *impossible to prove* that any particular node is or is not executing the attack. This is because the only evidence is:
+
+1. Spoofed transactions exist
+2. Lite clients claim to be censored
+
+It is thus entirely possible, when this evidence is taken seriously, to smear the reputation of an honest node by concocting spoofed transactions oneself and claiming via social fraud that some multitude of lite clients had those transactions censored. Both points, from any outside perspective, have no objective method for verification. Whether an attacker is actually meddling in key exchanges or just setting up an honest, competing node, to appear as doing such, no outside party can objectively discern.
 
 ## 2. Ordered Merkle Trees
 
@@ -20,7 +33,7 @@ The computation costs of concatenating preimages rather than summing should be t
 
 ## 3. Transaction Intent
 
-*Intent* is any arbitrary peice of identifying information included in the transaction which has opted in for MCP - the most obvious example being the receiving address, allowing that recepient to test for censorship of messages to them, but the intent can also be an application ID, layer-2 reference, or any other value. These mark the transaction and determine how they are ordered within the Merkle Tree, as well as providing users and nodes with an marker for transactions which they can use to request completeness proofs on.
+*Intent* is any arbitrary peice of identifying information included in the transaction - the most obvious example being the receiving address, allowing that recepient to test for censorship of messages to them, but the intent can also be an application ID, layer-2 reference, or a known and common value indicating the desire to perform a key exchange before parties' public keys are known. These mark the transaction and determine how they are ordered within the Merkle Tree, as well as providing users and nodes with an marker for transactions which they can use to request completeness proofs on.
 
 ## 4. Intent Ordered Merkle Trees
 
