@@ -2,11 +2,15 @@
 
 ## Abstract
 
-Merkle Completeness Proofs (MCPs) are a new method of verification full nodes can offer lite clients which can prove that a set of transactions marked a certain way has been completely provided, or that no such transaction exists in the block at all. Transactions can opt-in and pay an extra fee for any additional computational complexity imparted on block producers, which most notably involves sorting each 'type' in any block; the computational overhead to verify the sorting or to provide a proof are trivial; the latter consists only of providing two additional Merkle Branches for any single group.
+Merkle Completeness Proofs (MCPs) are a new method of verification full nodes can offer lite clients which can prove that a set of transactions marked a certain way has been completely provided, or that no such transaction exists in the block at all. Transactions opt-in by marking themselves with an "intent" value. Any additional complexity imparted on block producers involves sorting transactions of each 'intent groupt' within a block; the computational overhead to verify the sorting i.e. to provide a proof is trivial; consisting only of providing two additional Merkle Branches alongside any single group of similarly marked transactions.
+
+In order for these proofs to work, the sorting of intent groups must be enshrined into consensus such that failure to produce a block which correctly sorts such transactions means that the block is not valid.
 
 ## 1. Merkle Proofs
 
-A typical Merkle Proof is able to succintly prove that some peice of data in a Merkle Tree certainly is a member of it by providing its Merkle Branch. In UTXO blockchains this allows lite nodes and clients to confirm transactions without processing an entire block's worth of data. However, if a user is not provided these elements of the Merkle Tree, they can not know for sure what *does not* exist - i.e. they can not know what they are missing without a full block.
+A typical Merkle Proof is able to succintly prove that some peice of data in a Merkle Tree certainly is a member of it by providing only its associated Merkle Branch. In UTXO blockchains this allows lite clients to confirm transactions without processing an entire block's worth of data; for scalable chains where users are not expected to run full nodes, further block confirmations provide more and more ensurance to lite clients that the inputs to their UTXO were not double spent *within* the block they recieved it from.
+
+Merkle Completeness Proofs seek to provide the inverse assurance that a Merkle Branch provides. If a user is not provided with certain branches of the Merkle Tree, they can not know for sure what *does not* exist - i.e. they can not know what they are missing without a full block. This has important implications when the blockchain is used for secure messaging and key exchange - notably: a colluding set of full nodes may fail to provide users with key exchange requests from other users, opting  instead to selectively copy and spoof those messages in order to covertly insert themselves into the key exchange.
 
 ## 2. Ordered Merkle Trees
 
