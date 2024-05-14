@@ -90,10 +90,8 @@ To prevent attackers from finalizing an interval before honest nodes have a chan
 
 It is taken for granted that checkpoints must either include every block header or a random sample from the interval it reflects - the former is likely excessively expensive and the latter requires a fair random-sampling mechanism.
 
-The simplest possible way to ensure checkpoint publishers provide an unbiased random sample is to split checkpoints into a commit then publish process. The checkpoint publisher first commits their checkpoint by publishing a hash representation of it.
-
-A random number from the Host Chain block (like Host Chain block header) is then used to define the random sample of block headers which the actual checkpoint must include. Once the checkpoint publisher sees their commitment and the random sample it defines, they can then publish a valid checkpoint along with the random sample.
+The simplest possible way to ensure checkpoint publishers provide an unbiased random sample is to split checkpoints into a commit then publish process. The checkpoint publisher first commits their checkpoint by publishing a hash representation of it. A random number from the Host Chain block (like Host Chain block header) is then used to define the random sample of block headers which the actual checkpoint must include. Once the checkpoint publisher sees their commitment and the random sample it defines, they can then publish a valid checkpoint along with the random sample.
 
 The random sample, while not as precise as every block header, can still provide onlookers with an estimate for the relative stake between competing checkpoints.
 
-Requiring checkpoint publishers to produce two transactions per checkpoint on the Host Chain may influence the decision of the Host Chain. The most important quality of the Host Chain is that it is secure, but in order to keep costs low while Saito fees are low, consideration should also be taken in choosing a chain which can publish data for a decent price.
+Requiring checkpoint publishers to produce two transactions per checkpoint on the Host Chain may influence the decision of the Host Chain, as it doubles the Host Chain fees required. The most important quality of the Host Chain is that it is secure, but in order to keep costs low while Saito fees are low, consideration should also be taken in choosing a chain which can publish data for a decent price.
